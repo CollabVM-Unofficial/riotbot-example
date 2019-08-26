@@ -1,4 +1,5 @@
 const riot = require('matrix-js-sdk');
+
 const {accesstoken,userid,prefix} = require('./config.json');
 
 const client = riot.createClient({
@@ -14,11 +15,13 @@ client.once('sync', function(state, prevState, res) {
 client.on('Room.timeline', function(event, room, toStartOfTimeline) {
   if(event.getType()!=='m.room.message') return;
   
+
   const args = event.event.content.body.slice(prefix.length).split(' ');
   
   if(event.event.content.body.startsWith(prefix+'ping')) {
     client.sendEvent(room.roomId, 'm.room.message', { 'body': 'Pong!', 'msgtype': 'm.text'}, '', (err, res) => { });
   } else if(event.event.content.body.startsWith(prefix+'arguments')) {
+
     client.sendEvent(room.roomId, 'm.room.message', { 'body': args.split(1).join(','), 'msgtype': 'm.text'}, '', (err, res) => { });
   }
 });
